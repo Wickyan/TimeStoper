@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView tv;
+    private TextView tv, tv2;
     private int i = 0;
 
     @Override
@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         tv = (TextView) findViewById(R.id.textView);
+        tv2 = (TextView) findViewById(R.id.textView2);
+
         tv.setText("aaaa");
 
         new Thread(new Runnable() {
@@ -31,10 +33,30 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 while (true) {
                     try {
-                        tv.setText(String.valueOf((i++)));
+                        i++;
+//                        tv2.setText("String.valueOf(i)" + i + "!!");
+
+                        tv.setText(secToMin(i));
+
+                        switch (i) {
+                            case 3 * 60 :
+                            case 5 * 60 :
+                            case 12 * 60 :
+                            case 15 * 60 :
+                                vibrateByTime(500);
+                                break;
+                            case 1 * 60 :
+                            case 6 * 60 :
+                            case 18 * 60 :
+                                vibrateByTime(1500);
+                                break;
+                        }
+
                         Thread.sleep(1000);
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
+                        Toast.makeText(MainActivity.this, "error",Toast.LENGTH_SHORT).show();
+
                         e.printStackTrace();
                     }
                 }
@@ -56,9 +78,27 @@ public class MainActivity extends AppCompatActivity {
         Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();
     }
-    public void vibrateByTime(int time)
-    {
+    public void vibrateByTime(int time) {
         Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
         vibrator.vibrate(time);
+    }
+
+    public String secToMin(int seconds) {
+        int minutes = seconds / 60;
+        String min = "";
+        if (minutes < 10) {
+            min += "0";
+        }
+        min += minutes;
+
+        int remainingSeconds = seconds % 60;
+        String sec = "";
+        if (remainingSeconds < 10) {
+            sec += "0";
+        }
+        sec += remainingSeconds;
+
+        String ss = min + ":" + sec;
+        return ss;
     }
 }
